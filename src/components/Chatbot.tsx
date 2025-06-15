@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { User, Heart, Send, Circle } from "lucide-react";
 
@@ -31,23 +30,36 @@ const NAMES: Record<string, string> = {
 };
 
 const Chatbot = ({ language }: { language: string }) => {
-  const [messages, setMessages] = useState([{ from: "bot", text: BOT_RESPONSES[language]?.[0] || BOT_RESPONSES["en"][0] }]);
+  const [messages, setMessages] = useState([
+    { from: "bot", text: BOT_RESPONSES[language]?.[0] || BOT_RESPONSES["en"][0] }
+  ]);
   const [input, setInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  // const { sendMessage, isLoading } = useGeminiChat(); // Example Gemini hook
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Pick a random bot reply
-  function handleUserSend() {
+  // Use Gemini for AI response
+  async function handleUserSend() {
     if (!input.trim()) return;
-    setMessages(msgs => [
-      ...msgs,
-      { from: "user", text: input.trim() },
-      { from: "bot", text: BOT_RESPONSES[language]?.[Math.floor(Math.random() * BOT_RESPONSES[language].length)] ?? BOT_RESPONSES["en"][0] }
-    ]);
+    const userMsg = { from: "user", text: input.trim() };
+    setMessages(msgs => [...msgs, userMsg]);
     setInput("");
+    // Gemini API call (pseudo code, replace with real Gemini call)
+    try {
+      // const aiResponse = await sendMessage(input.trim(), language);
+      // setMessages(msgs => [...msgs, { from: "bot", text: aiResponse }]);
+      setTimeout(() => {
+        setMessages(msgs => [
+          ...msgs,
+          { from: "bot", text: BOT_RESPONSES[language]?.[Math.floor(Math.random() * BOT_RESPONSES[language].length)] ?? BOT_RESPONSES["en"][0] }
+        ]);
+      }, 1200); // Placeholder for async Gemini response
+    } catch (e) {
+      setMessages(msgs => [...msgs, { from: "bot", text: "Sorry, I couldn't process that. Please try again." }]);
+    }
   }
 
   return (

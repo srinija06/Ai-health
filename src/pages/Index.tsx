@@ -1,4 +1,3 @@
-
 import Onboarding from "@/components/Onboarding";
 import Chatbot from "@/components/Chatbot";
 import TherapistList from "@/components/TherapistList";
